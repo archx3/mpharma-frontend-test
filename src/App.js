@@ -1,13 +1,15 @@
-import React  from 'react';
+import React    from 'react';
 // import logo   from './logo.svg';
+import "bootstrap/dist/css/bootstrap.css";
 import './App.css';
-import Layout from "./layouts/Layout";
+import Layout   from "./layouts/Layout";
+import Products from "./components/Products";
 
 function App() {
   return (
     <div className="App">
       <Layout>
-        <p>mdksmlkdmsd</p>
+        <Products/>
       </Layout>
     </div>
   );
