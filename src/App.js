@@ -3,13 +3,14 @@ import React    from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import './App.css';
 import Layout   from "./layouts/Layout";
-import Products from "./components/Products";
+import Products from "./components/Products/Products";
 
 function App() {
   return (
     <div className="App">
       <Layout>
         <Products/>
+        <hr/>
       </Layout>
     </div>
   );

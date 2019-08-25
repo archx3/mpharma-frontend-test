@@ -10,7 +10,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 60px;
+  min-height: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -33,11 +33,11 @@
 }
 
 .btn{
-  border-radius: 18px;
+  border-radius: 20px;
 }
 
 .old-price{
-  opacity: .5;
+  opacity: .4;
   text-decoration: line-through;
 }
 
@@ -45,4 +45,71 @@
   position: absolute;
   bottom: 0;
   left: 0;
+}
+.navbar{
+  padding: 0 1rem;
+}
+.navbar-brand{
+  padding: 0;
+  color: #fabf0d;
+}
+.navbar-brand div{
+  width: 70px;
+  height: 70px;
+  background-size: 200px;
+  background-position-y: center;
+  background-position-x: -50px;
+}
+
+.primary-color. a.primary-color{
+  color: #fabf0d;
+}
+
+.navbar .btn-primary{
+  color: #000;
+  background-color: #fabf0d;
+  border-color: #fabf0d;
+}
+
+.navbar .btn-primary:hover{
+  background-color: #e76f0a;
+}
+
+#navbarCollapse{
+  position: relative;
+}
+.add-product{
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 3px;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, .3)) ;
+
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  color: #000;
+}
+
+.add-product label{
+
+}
+
+.add-product::before{
+  content: '';
+  display: block;
+  position: absolute;
+  top: -20px;
+  right: 20px;
+  border: 10px solid transparent;
+  border-bottom-color:  #ffffff;
+}
+
+.btn.disabled{
+  opacity: .3;
+  pointer-events: none;
+}
+
+input[readonly]{
+  background: #ffffff;
+  border: none;
 }
