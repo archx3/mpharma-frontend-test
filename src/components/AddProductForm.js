@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect }          from 'react-redux' // a fn that return a higher order component
+import {isEmpty, isNumeric}            from "../lib/utils";
 
-class AddProductForm extends Component {
+export class AddProductForm extends Component {
   state = {
     name : '',
     // the prices data shape will look like:
@@ -9,7 +10,7 @@ class AddProductForm extends Component {
      id : Number <index + 1>,
      name : String <*>,
      date : Date <Date.now()>}} */
-    price      : '0',
+    price      : '',
     busy        : false, // a boolean that tells us whether something is happening
     error       : false
   };
@@ -25,7 +26,6 @@ class AddProductForm extends Component {
 
     // we may need to make some other checks on the price can't use an ANDed if, ;(
     if (tempState.name) {
-      console.log(typeof parseFloat(tempState.price), parseInt(tempState.price, 10));
       // FIXME find workaround for parseFloat converting text 0
       if (typeof parseInt(tempState.price) === 'number'){
         // we're good to go let's save the data
@@ -57,6 +57,7 @@ class AddProductForm extends Component {
   }
 
   render () {
+    let emptyField = (isEmpty(this.state.name) || isEmpty(this.state.price));
     return <form>
       <div className="form-group">
         <label className="text-left col-12 p-0 font-weight-bold" htmlFor="p-name">Product Name</label>
@@ -70,7 +71,7 @@ class AddProductForm extends Component {
         <input type="number" className="form-control" id="p-price" placeholder="0.00"
         onChange={ this.priceChangedHandler.bind(this) }/>
       </div>
-      <button type="button" className="btn btn-primary col-12"
+      <button type="button" className={`${ emptyField ? 'disabled' : '' } btn btn-primary col-12`}
               onClick={ () => { this.validateInput(); } }>Submit
       </button>
     </form>;

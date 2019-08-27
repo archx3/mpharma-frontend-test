@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import logo                 from "../assets/images/mutti-card-white.svg";
-import AddProductForm       from "./AddProductForm";
+import logo                 from "../../assets/images/mutti-card-white.svg";
+import AddProductForm       from "../AddProductForm";
 
-class HeaderSection extends Component {
+export class HeaderSection extends Component {
   state = {
     showAddForm : false
   };
@@ -13,8 +13,6 @@ class HeaderSection extends Component {
   }
 
   render () {
-    let state = this.state;
-
     return (
       <header className="App-header">
         <nav className="navbar navbar-expand-lg bg-inverse fixed-top scrolling-navbar">
@@ -35,9 +33,9 @@ class HeaderSection extends Component {
             <div className="collapse navbar-collapse" id="navbarCollapse">
               <ul className="navbar-nav mr-auto w-100 justify-content-end">
                 <li className="nav-item pt-3 pb-2">
-                  <a href="#"
+                  <button
                      onClick={this.toggleShowAddForm.bind(this)}
-                     className="nav-link btn btn-primary p pl-3 pr-3">Add Product</a>
+                     className="nav-link btn btn-primary p pl-3 pr-3">Add Product</button>
 
                   {this.state.showAddForm ?
                    <div className="add-product">

@@ -1,11 +1,11 @@
 import React from 'react';
 
-const FooterSection = () =>
+export const FooterSection = () =>
 {
   return (
-    <div className="Footer col-12">
+    <footer className="Footer col-12">
       <p>Copyright mPharma &copy; 2019</p>
-    </div>
+    </footer>
   );
 };
 

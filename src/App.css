@@ -1,3 +1,8 @@
+:root{
+  --base-yellow : #fabf0d;
+  --dark-yellow : #e76f0a;
+  --dark-gray : #282c34;
+}
 .App {
   text-align: center;
 }
@@ -9,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--dark-gray);
   min-height: 80px;
   display: flex;
   flex-direction: column;
@@ -17,19 +22,6 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .btn{
@@ -51,7 +43,7 @@
 }
 .navbar-brand{
   padding: 0;
-  color: #fabf0d;
+  color: var(--base-yellow);
 }
 .navbar-brand div{
   width: 70px;
@@ -62,17 +54,18 @@
 }
 
 .primary-color. a.primary-color{
-  color: #fabf0d;
+  color: var(--base-yellow);
 }
 
-.navbar .btn-primary{
+.navbar .btn-primary, .btn-primary{
   color: #000;
-  background-color: #fabf0d;
-  border-color: #fabf0d;
+  background-color: var(--base-yellow);
+  border-color: var(--base-yellow);
 }
 
-.navbar .btn-primary:hover{
-  background-color: #e76f0a;
+.navbar .btn-primary:hover, .btn-primary:hover{
+  background-color: var(--dark-yellow);
+  border-color: var(--dark-yellow);
 }
 
 #navbarCollapse{

@@ -2,23 +2,24 @@ import React, { Component } from 'react';
 import axios                from 'axios'
 // import EditProductForm      from "./EditProductForm";
 import { connect }          from 'react-redux' // a fn that return a higher order component
-import {setInitialState}    from "../../store/actions/actions";
+import { setInitialState }  from "../../store/actions/actions";
 
-import Product from "../Product";
+import Product from "../Product/Product";
 
-class Products extends Component {
+export class Products extends Component {
   state = {
-    products          : null,
-    product          : {
-      name              : '',  // we'll keep temporary product edit data here
-      price             : '0', // we'll keep temporary product edit data here},
+    product           : {
+      name  : '',  // we'll keep temporary product edit data here
+      price : '0', // we'll keep temporary product edit data here,
     },
     name              : '', // we'll keep temporary product edit data here
     price             : '0', // we'll keep temporary product edit data here
     selectedProductId : -1,
     isEditing         : false,
+    isAdding : false,
     loading           : false,
-    loaded : false
+    loaded            : false,
+    canRetry : false
   };
 
   // Catches exceptions generated in descendant components.
@@ -29,9 +30,7 @@ class Products extends Component {
   // Called immediately after a component is mounted.
   // Setting state here will trigger re-rendering
   componentDidMount () {
-    let state = this.state;
     // this is a good time to reach out to the 3rd Party api to get and get our initial data
-
     this.getProducts();
 
     window.addEventListener('keyup', (e) => {
@@ -42,7 +41,9 @@ class Products extends Component {
   }
 
   /**
-   @use get products list from the 3P API
+   * @sideeffects
+   * @use get products list from the 3P API
+   * @returns void
    */
   getProducts () {
     this.setState({ loading : true });
@@ -64,56 +65,72 @@ class Products extends Component {
            this.props.setInitialState(products)
          })
          .catch((err) => {
-           this.setState({ loading : false, loaded : true });
+           this.setState({ loading : false, loaded : true, canRetry : true });
            console.log(err);
          });
   }
 
 // Called immediately after updating occurs. Not called for the initial render.
   // The snapshot is only present if getSnapshotBeforeUpdate is present and returns non-null
-  componentDidUpdate (prevProps, prevState, snapshot) {}
+  // componentDidUpdate (prevProps, prevState, snapshot) {}
 
   // Called immediately before a component is destroyed.
   // Perform any necessary cleanup in this method, such as
   // cancelled network requests, or cleaning up any DOM elements created in componentDidMount.
-  componentWillUnmount () {}
+  // componentWillUnmount () {}
 
-  addProduct () {
-
-  }
-
+  /**
+   * @use commits ui changes to the redux store
+   * @param event {HTMLElementEventMap}
+   * @param product {{name : String, price : String | Number}}
+   */
   updateProduct (event, product) {
     let state = this.state;
-    this.props.onSaveEditedProduct({...product, name : state.product.name, price : state.product.price});
+    this.props.onSaveEditedProduct({ ...product, name : state.product.name, price : state.product.price });
     this.exitEditingMode();
   }
 
-  nameChangedHandler (event, product) {
+  /**
+   * @use
+   * @param event {HTMLElementEventMap}
+   */
+  nameChangedHandler (event) {
     let state = this.state;
-     this.setState({
-                    ...state, product : {name : event.target.value}
+    this.setState({
+                    ...state, product : { ...state.product, name : event.target.value }
                   });
 
     // this.props.onSaveEditedProduct({...product, name : event.target.value})
   }
 
-  priceChangedHandler (event, product) {
+  /**
+   *
+   * @param event {Event}
+   */
+  priceChangedHandler (event) {
     // TODO make state changes reversible when the save button is not clicked but escape key pressed
     let state = this.state;
     this.setState({
-                    ...state, product : {price : event.target.value}
+                    ...state, product : { ...state.product, price : event.target.value }
                   });
     // this.props.onSaveEditedProduct({...product, price : event.target.value})
   }
 
+  /**
+   * @use Switches the UI state to the normal read state
+   * @returns {void}
+   */
   exitEditingMode () {
-    this.setState({ product : {name : '', price : ''}, isEditing : false, selectedProductId : -1 });
+    this.setState({ product : { name : '', price : '' }, isEditing : false, selectedProductId : -1 });
   }
 
-  // Switches to edit Mode
+  /**
+   * @use Switches to edit Mode
+   * @param product {{id : Number, name : String, price : String | Number}}
+   */
   setSelectedProductToEdit (product) {
     // let state = this.state;
-    this.setState({ product : {name : product.name, price : product.price}, isEditing : true, selectedProductId : product.id });
+    this.setState({ product : { name : product.name, price : product.price }, isEditing : true, selectedProductId : product.id });
     // console.log(state);
   }
 
@@ -124,14 +141,19 @@ class Products extends Component {
     // let's externalise the conditional rendering of the list of products
     // so the returned template is clean
     let ProductList = null;
-    if(state.loading) { // busy state
+    if (state.loading) { // busy state
       ProductList = <tr>
-        <td colSpan="4" className="check text-center">Loading...</td>
+        <td colSpan="3" className="check text-center">Loading...</td>
       </tr>
     }
-    if(state.loaded && !(props.products && props.products.length)) {
+    if (state.loaded && !(props.products && props.products.length)) {
       ProductList = <tr>
-        <td colSpan="4" className="check text-center">No products to display at the moment</td>
+        <td colSpan="3" className="check text-center">No products to display at the moment
+          <button className={`${state.canRetry ? '' : 'disabled'} btn btn-primary ml-3`}
+          onClick={() => {
+            state.canRetry = true;
+            this.getProducts.bind(this)
+          }}>Retry</button> </td>
       </tr>
     }
     if (props.products && props.products.length) {
@@ -141,22 +163,29 @@ class Products extends Component {
                            const disableDelete = state.isEditing && state.selectedProductId === product.id ? 'disabled' : '';
                            const disableEdit = state.isEditing && state.selectedProductId === product.id ? 'disabled' : '';
 
-                           return <Product key={i} state={state} product={product}
-                                           onChange={(event) => { this.nameChangedHandler(event, product) }} onDoubleClick={() => {
-                             this.setSelectedProductToEdit({
-                                                             id    : product.id,
-                                                             name  : product.name,
-                                                             price : product.prices[0].price
-                                                           })
-                           }} editing={this.state.isEditing} onChange1={(event) => { this.priceChangedHandler(event, product) }}
-                                           onClick={(event) => {this.updateProduct(event, product) }} disableEdit={disableEdit}
+                           return <Product key={i}
+                                           state={state}
+                                           product={product}
+                                           editing={this.state.isEditing}
+                                           disableEdit={disableEdit}
+                                           disableDelete={disableDelete}
+                                           onChange={(event) => { this.nameChangedHandler(event, product) }}
+                                           onChange1={(event) => { this.priceChangedHandler(event, product) }}
+                                           onClick={(event) => {this.updateProduct(event, product) }}
+                                           onDoubleClick={() => {
+                                             this.setSelectedProductToEdit({
+                                                                             id    : product.id,
+                                                                             name  : product.name,
+                                                                             price : product.prices[0].price
+                                                                           })
+                                           }}
                                            onClick1={() => {
                                              this.setSelectedProductToEdit({
                                                                              id    : product.id,
                                                                              name  : product.name,
                                                                              price : product.prices[0].price
                                                                            })
-                                           }} disableDelete={disableDelete}
+                                           }}
                                            onClick2={() => { this.props.onDeleteProduct(product.id) }}/>
                          })
     }
@@ -166,7 +195,6 @@ class Products extends Component {
         <table className="table">
           <thead>
             <tr>
-              <th className="check"><input type="checkbox"/></th>
               <th>Product</th>
               <th>Price</th>
               <th>{state.isEditing ? <span className="small">You can Use Escape To Exit Edit Mode</span> : null}</th>
@@ -180,9 +208,10 @@ class Products extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
-    products : state.products
+    products : state.products.map((product) => {
+      return { id : product.id, name : product.name, ...state.prices[product.id - 1] }
+    })
   }
 };
 
@@ -191,15 +220,13 @@ const mapDispatchToProps = dispatch => {
   return {
     onDeleteProduct     : (id) => dispatch({
                                              type    : 'REMOVE_PRODUCT',
-                                             payload : {
-                                               index : id
-                                             }
+                                             payload : { index : id }
                                            }),
     onSaveEditedProduct : (product) => dispatch({
-                                             type    : 'EDIT_PRODUCT',
-                                             payload : { product }
-                                           }),
-    setInitialState     : (products) => dispatch(setInitialState({products}))
+                                                  type    : 'EDIT_PRODUCT',
+                                                  payload : { product }
+                                                }),
+    setInitialState     : (products) => dispatch(setInitialState({ products }))
   }
 };
 

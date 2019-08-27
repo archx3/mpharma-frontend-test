@@ -1,7 +1,7 @@
 import React         from 'react';
 import Aux           from "../higher-order-components/Aux";
-import HeaderSection from "../components/HeaderSection";
-import FooterSection from "../components/FooterSection";
+import HeaderSection from "../components/HeaderSection/HeaderSection";
+import FooterSection from "../components/FooterSection/FooterSection";
 
 const Layout = (props) =>
 {
