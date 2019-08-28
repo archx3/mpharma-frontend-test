@@ -162,7 +162,11 @@ export class Products extends Component {
                            // dynamic className binding
                            const disableDelete = state.isEditing && state.selectedProductId === product.id ? 'disabled' : '';
                            const disableEdit = state.isEditing && state.selectedProductId === product.id ? 'disabled' : '';
-
+                           const productToEditPayload = {
+                             id    : product.id,
+                             name  : product.name,
+                             price : product.prices.prices[0].price
+                           };
                            return <Product key={i}
                                            state={state}
                                            product={product}
@@ -173,19 +177,10 @@ export class Products extends Component {
                                            onChange1={(event) => { this.priceChangedHandler(event, product) }}
                                            onClick={(event) => {this.updateProduct(event, product) }}
                                            onDoubleClick={() => {
-                                             this.setSelectedProductToEdit({
-                                                                             id    : product.id,
-                                                                             name  : product.name,
-                                                                             price : product.prices[0].price
-                                                                           })
-                                           }}
+                                             this.setSelectedProductToEdit(productToEditPayload)}}
                                            onClick1={() => {
-                                             this.setSelectedProductToEdit({
-                                                                             id    : product.id,
-                                                                             name  : product.name,
-                                                                             price : product.prices[0].price
-                                                                           })
-                                           }}
+
+                                             this.setSelectedProductToEdit(productToEditPayload)}}
                                            onClick2={() => { this.props.onDeleteProduct(product.id) }}/>
                          })
     }
@@ -210,7 +205,15 @@ export class Products extends Component {
 const mapStateToProps = state => {
   return {
     products : state.products.map((product) => {
-      return { id : product.id, name : product.name, ...state.prices[product.id - 1] }
+      let prices = state.prices.filter(priceSet => {
+        return priceSet.id === product.id;
+      });
+      // console.log(dt);
+
+      return { id : product.id,
+        name : product.name,
+        ...(prices && {prices : prices[0]})
+      };
     })
   }
 };

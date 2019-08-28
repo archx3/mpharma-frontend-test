@@ -4,7 +4,7 @@ import * as PropTypes       from "prop-types";
 export class Product extends Component {
   render () {
     let props = this.props;
-
+console.log(props.product.prices, );
     return <tr>
       {/*region: SECTION  product name*/}
       <td>
@@ -25,9 +25,9 @@ export class Product extends Component {
 
       {/*region: SECTION product price*/}
       <td style={{ width : "200px" }}>
-        {props.product.prices[1] && !props.editing ?
-         <span className="old-price mr-3" title={`Previously : ${props.product.prices[1].price}`}>
-                                  {props.product.prices[1].price}
+        {props.product.prices.prices[1] && !props.editing ?
+         <span className="old-price mr-3" title={`Previously : ${props.product.prices.prices[1].price}`}>
+                                  {props.product.prices.prices[1].price}
                                 </span> : null}
         {
           props.state.isEditing && props.state.selectedProductId === props.product.id ?
@@ -43,9 +43,9 @@ export class Product extends Component {
           !props.state.isEditing || (props.state.isEditing && props.state.selectedProductId !== props.product.id) ?
           <input type="text" className="font-weight-bold"
                  style={{ maxWidth : "100px" }}
-                 title={`Current Price : ${props.product.prices[0].price}`}
+                 title={`Current Price : ${props.product.prices.prices[0].price}`}
                  onDoubleClick={props.onDoubleClick}
-                 value={props.product.prices[0].price}
+                 value={props.product.prices.prices[0].price}
                  readOnly={true}/> : null
         }
       </td>

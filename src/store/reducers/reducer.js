@@ -3,6 +3,7 @@ import * as actionTypes from '../actions/actions';
 const initialState = {
   products  : [],
   prices : [],
+  uid : 0,
   pricesBin : null // this is trash bin where we'll be tossing price-histories of deleted items
 };
 
@@ -28,22 +29,24 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         products : productsTable,
-        prices   : pricesTable
+        prices   : pricesTable,
+        uid : pricesTable.length
       };
 
     case actionTypes.ADD_PRODUCT:
       // make transforms here
       // return new state
       // create a new products array which will be used to replace the old one
-      let id = state.products.length + 1;
+      console.log(state.uid +  1);
+      state.uid +=  1;
       newState = {
         ...state,
         products : state.products.concat({
-                                           id   : id,
+                                           id   : state.uid,
                                            name : payload.product.name,
                                          }),
         prices   : state.prices.concat({
-                                           id     : id,
+                                           id     : state.uid,
                                            prices : [
                                              {
                                                id    : 1,
